@@ -1,5 +1,7 @@
 using PulsePanel.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using PulsePanel.Core.Interfaces;
+using PulsePanel.Infrastructure.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +12,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IServerService, ServerService>();
 
 var app = builder.Build();
 
@@ -17,7 +22,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

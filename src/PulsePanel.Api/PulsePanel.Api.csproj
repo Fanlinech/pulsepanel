@@ -17,15 +17,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PulsePanel.Core\PulsePanel.Core.csproj" />
     <ProjectReference Include="..\PulsePanel.Infrastructure\PulsePanel.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
