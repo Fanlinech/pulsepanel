@@ -1,0 +1,6 @@
+@PulsePanel.Api_HostAddress = http://localhost:5264
+
+GET {{PulsePanel.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
