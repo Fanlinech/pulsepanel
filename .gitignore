@@ -1,8 +1,93 @@
-
-*.csproj.user
-
+# Visual Studio
 .vs/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+*.csproj.user
+*.vcxproj.user
 
+# Build results
 bin/
-
 obj/
+[Bb]uild/
+[Bb]uilds/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# .NET
+project.lock.json
+project.assets.json
+*.nuget.props
+*.nuget.targets
+artifacts/
+TestResults/
+coverage/
+coverage.cobertura.xml
+*.coverage
+*.coveragexml
+*.trx
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# User-specific launch/config files
+launchSettings.json.user
+appsettings.*.local.json
+appsettings.Local.json
+
+# Secrets and environment files
+.env
+.env.*
+!.env.example
+secrets.json
+
+# Logs
+logs/
+*.log
+*.binlog
+
+# Docker
+docker-compose.override.yml
+docker-compose.*.override.yml
+.docker/
+docker-data/
+postgres-data/
+pgdata/
+
+# EF Core generated bundles / local db files
+efbundle*
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
