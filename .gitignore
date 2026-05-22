@@ -71,6 +71,7 @@ efbundle*
 *.sqlite3
 *.mdf
 *.ldf
+Migrations/
 
 # NuGet
 *.nupkg
@@ -91,3 +92,5 @@ $RECYCLE.BIN/
 *.bak
 *.swp
 *.swo
+
+
