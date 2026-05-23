@@ -108,4 +108,33 @@ public class ServerService : IServerService
             Status = GetStatus(server.LastHeartbeatAt)
         };
     }
+
+    public async Task<ServerResponse?> UpdateAsync(Guid id, UpdateServerRequest request)
+    {
+        var server = await _dbContext.Servers.FindAsync(id);
+        if (server is null) { return null; }
+        server.Name = request.Name;
+        server.Host = request.Host;
+        server.Description = request.Description;
+        await _dbContext.SaveChangesAsync();
+        return new ServerResponse
+        {
+            Id = server.Id,
+            Name = server.Name,
+            Host = server.Host,
+            Description = server.Description,
+            CreatedAt = server.CreatedAt,
+            LastHeartbeatAt = server.LastHeartbeatAt,
+            Status = GetStatus(server.LastHeartbeatAt)
+        };
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var server = await _dbContext.Servers.FindAsync(id);
+        if (server is null) { return false; }
+        _dbContext.Remove(server);
+        await _dbContext.SaveChangesAsync();
+        return true;
+    }
 }

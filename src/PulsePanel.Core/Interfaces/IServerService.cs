@@ -10,5 +10,8 @@ namespace PulsePanel.Core.Interfaces
         Task<IReadOnlyList<ServerResponse>> GetAllAsync();
         Task<ServerResponse?> GetByIDAsync(Guid id);
         Task<ServerResponse?> UpdateHeartbeatAsync(Guid id);
+        
+        Task<ServerResponse?> UpdateAsync(Guid id, UpdateServerRequest request);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

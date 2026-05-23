@@ -53,5 +53,23 @@ namespace PulsePanel.Api.Controllers
             return Ok(server);
         }
 
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateAsyncServer(Guid id, [FromBody] UpdateServerRequest request)
+        {
+            var server = await _serverService.UpdateAsync(id, request);
+            if (server == null)
+            {  
+                return NotFound(); 
+            }
+            return Ok(server);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteServerAsync(Guid id)
+        {
+            if (await _serverService.DeleteAsync(id)) { return NoContent();}
+            return NotFound();
+        }
+
     }
 }
