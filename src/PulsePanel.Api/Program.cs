@@ -15,6 +15,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IServerService, ServerService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var app = builder.Build();
 
