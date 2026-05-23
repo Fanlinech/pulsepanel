@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PulsePanel.Core.DTOs.Servers;
 using PulsePanel.Core.Interfaces;
-using PulsePanel.Infrastructure.Services;
-using System.Threading.Tasks;
+
 
 namespace PulsePanel.Api.Controllers
 {

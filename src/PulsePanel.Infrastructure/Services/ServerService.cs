@@ -10,6 +10,17 @@ public class ServerService : IServerService
 {
     private readonly AppDbContext _dbContext;
 
+    private static ServerStatus GetStatus(DateTime? LastHeartbeatAt)
+    {
+        if (LastHeartbeatAt is null)
+        {
+            return ServerStatus.Unknown;
+        }
+
+        return LastHeartbeatAt >= DateTime.UtcNow.AddMinutes(-5)
+            ? ServerStatus.Online
+            : ServerStatus.Offline;
+    }
     public ServerService(AppDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -38,9 +49,9 @@ public class ServerService : IServerService
             Description = newServer.Description,
             CreatedAt = newServer.CreatedAt,
             LastHeartbeatAt = newServer.LastHeartbeatAt,
-            Status = newServer.Status
+            Status = GetStatus(newServer.LastHeartbeatAt)
         };
-    }
+        }
 
     public async Task<IReadOnlyList<ServerResponse>> GetAllAsync()
     {
@@ -54,7 +65,7 @@ public class ServerService : IServerService
                 Description = server.Description,
                 CreatedAt = server.CreatedAt,
                 LastHeartbeatAt = server.LastHeartbeatAt,
-                Status = server.Status
+                Status = GetStatus(server.LastHeartbeatAt)
             })
             .ToListAsync();
 
@@ -74,7 +85,7 @@ public class ServerService : IServerService
             Description = server.Description,
             CreatedAt = server.CreatedAt,
             LastHeartbeatAt = server.LastHeartbeatAt,
-            Status = server.Status
+            Status = GetStatus(server.LastHeartbeatAt)
         })
         .FirstOrDefaultAsync();
     }
@@ -94,7 +105,7 @@ public class ServerService : IServerService
             Description = server.Description,
             CreatedAt = server.CreatedAt,
             LastHeartbeatAt = server.LastHeartbeatAt,
-            Status = server.Status
+            Status = GetStatus(server.LastHeartbeatAt)
         };
     }
 }
