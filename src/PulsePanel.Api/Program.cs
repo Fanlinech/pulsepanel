@@ -1,6 +1,7 @@
-using PulsePanel.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using PulsePanel.Core.Interfaces;
+using PulsePanel.Core.Services;
+using PulsePanel.Infrastructure.Persistence;
 using PulsePanel.Infrastructure.Services;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IServerService, ServerService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-
+builder.Services.AddSingleton<ServerStatusCalculator>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

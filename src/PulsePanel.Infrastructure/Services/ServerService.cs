@@ -1,29 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using PulsePanel.Core;
 using PulsePanel.Core.DTOs.Servers;
 using PulsePanel.Core.Entities;
 using PulsePanel.Core.Interfaces;
-using PulsePanel.Core;
+using PulsePanel.Core.Services;
 using PulsePanel.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 namespace PulsePanel.Infrastructure.Services;
 
 public class ServerService : IServerService
 {
     private readonly AppDbContext _dbContext;
+    private readonly ServerStatusCalculator _statusCalc;
 
-    private static ServerStatus GetStatus(DateTime? LastHeartbeatAt)
-    {
-        if (LastHeartbeatAt is null)
-        {
-            return ServerStatus.Unknown;
-        }
-
-        return LastHeartbeatAt >= DateTime.UtcNow.AddMinutes(-5)
-            ? ServerStatus.Online
-            : ServerStatus.Offline;
-    }
-    public ServerService(AppDbContext dbContext)
+    public ServerService(AppDbContext dbContext, ServerStatusCalculator statusCalc)
     {
         _dbContext = dbContext;
+        _statusCalc = statusCalc;
     }
 
     public async Task<ServerResponse> CreateAsync(CreateServerRequest request)
@@ -49,7 +41,7 @@ public class ServerService : IServerService
             Description = newServer.Description,
             CreatedAt = newServer.CreatedAt,
             LastHeartbeatAt = newServer.LastHeartbeatAt,
-            Status = GetStatus(newServer.LastHeartbeatAt)
+            Status = _statusCalc.GetStatus(newServer.LastHeartbeatAt)
         };
         }
 
@@ -65,7 +57,7 @@ public class ServerService : IServerService
                 Description = server.Description,
                 CreatedAt = server.CreatedAt,
                 LastHeartbeatAt = server.LastHeartbeatAt,
-                Status = GetStatus(server.LastHeartbeatAt)
+                Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
             })
             .ToListAsync();
 
@@ -85,7 +77,7 @@ public class ServerService : IServerService
             Description = server.Description,
             CreatedAt = server.CreatedAt,
             LastHeartbeatAt = server.LastHeartbeatAt,
-            Status = GetStatus(server.LastHeartbeatAt)
+            Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
         })
         .FirstOrDefaultAsync();
     }
@@ -105,7 +97,7 @@ public class ServerService : IServerService
             Description = server.Description,
             CreatedAt = server.CreatedAt,
             LastHeartbeatAt = server.LastHeartbeatAt,
-            Status = GetStatus(server.LastHeartbeatAt)
+            Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
         };
     }
 
@@ -125,7 +117,7 @@ public class ServerService : IServerService
             Description = server.Description,
             CreatedAt = server.CreatedAt,
             LastHeartbeatAt = server.LastHeartbeatAt,
-            Status = GetStatus(server.LastHeartbeatAt)
+            Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
         };
     }
 

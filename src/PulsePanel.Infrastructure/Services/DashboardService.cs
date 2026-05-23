@@ -3,6 +3,7 @@ using PulsePanel.Core;
 using PulsePanel.Core.DTOs.Dashboard;
 using PulsePanel.Core.DTOs.Servers;
 using PulsePanel.Core.Interfaces;
+using PulsePanel.Core.Services;
 using PulsePanel.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
@@ -15,22 +16,14 @@ namespace PulsePanel.Infrastructure.Services
     public class DashboardService : IDashboardService
     {
         private readonly AppDbContext _dbContext;
-        public DashboardService(AppDbContext dbContext)
+        private readonly ServerStatusCalculator _statusCalc;
+        public DashboardService(AppDbContext dbContext, ServerStatusCalculator statusCalc)
         {
             _dbContext = dbContext;
+            _statusCalc = statusCalc;
         }
 
-        private static ServerStatus GetStatus(DateTime? LastHeartbeatAt)
-        {
-            if (LastHeartbeatAt is null)
-            {
-                return ServerStatus.Unknown;
-            }
-
-            return LastHeartbeatAt >= DateTime.UtcNow.AddMinutes(-5)
-                ? ServerStatus.Online
-                : ServerStatus.Offline;
-        }
+        
 
         public async Task<DashboardSummaryResponse> GetSummaryAsync()
         {
@@ -45,7 +38,7 @@ namespace PulsePanel.Infrastructure.Services
                 Description = server.Description,
                 CreatedAt = server.CreatedAt,
                 LastHeartbeatAt = server.LastHeartbeatAt,
-                Status = GetStatus(server.LastHeartbeatAt)
+                Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
             })
             .ToListAsync();
 
