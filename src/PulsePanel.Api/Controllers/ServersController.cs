@@ -27,7 +27,16 @@ namespace PulsePanel.Api.Controllers
                 new { id = server.Id },
                 server);
         }
-
+        [HttpPost("{id:guid}/heartbeat")]
+        public async Task<ActionResult<ServerResponse>> UpdateHeartbeat(Guid id)
+        {
+            var server = await _serverService.UpdateHeartbeatAsync(id);
+            if (server == null)
+            {
+                return NotFound();
+            }
+            return Ok(server);
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllServers()
         {

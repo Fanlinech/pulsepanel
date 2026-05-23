@@ -9,5 +9,6 @@ namespace PulsePanel.Core.Interfaces
         Task<ServerResponse> CreateAsync(CreateServerRequest request);
         Task<IReadOnlyList<ServerResponse>> GetAllAsync();
         Task<ServerResponse?> GetByIDAsync(Guid id);
+        Task<ServerResponse?> UpdateHeartbeatAsync(Guid id);
     }
 }

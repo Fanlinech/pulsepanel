@@ -78,4 +78,23 @@ public class ServerService : IServerService
         })
         .FirstOrDefaultAsync();
     }
+
+    public async Task<ServerResponse?> UpdateHeartbeatAsync(Guid id)
+    {
+        var server = await _dbContext.Servers.FindAsync(id);
+        if (server is null) { return null; }
+        server.LastHeartbeatAt = DateTime.UtcNow;
+        server.Status = ServerStatus.Online;
+        await _dbContext.SaveChangesAsync();
+        return new ServerResponse
+        {
+            Id = server.Id,
+            Name = server.Name,
+            Host = server.Host,
+            Description = server.Description,
+            CreatedAt = server.CreatedAt,
+            LastHeartbeatAt = server.LastHeartbeatAt,
+            Status = server.Status
+        };
+    }
 }
