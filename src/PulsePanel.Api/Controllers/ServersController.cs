@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PulsePanel.Core.DTOs.Common;
 using PulsePanel.Core.DTOs.Servers;
 using PulsePanel.Core.Interfaces;
+using System.Net;
 
 
 namespace PulsePanel.Api.Controllers
@@ -10,6 +12,19 @@ namespace PulsePanel.Api.Controllers
     public class ServersController : ControllerBase
     {
         private readonly IServerService _serverService;
+
+        private NotFoundObjectResult ServerNotFound()
+        {
+            var error = new ErrorResponse
+            {
+                Message = "Server not found",
+                StatusCode = HttpStatusCode.NotFound,
+                TimeStamp = DateTime.UtcNow,
+                Path = HttpContext.Request.Path
+            };
+
+            return NotFound(error);
+        }
         public ServersController(IServerService serverService)
         {
             _serverService = serverService;
@@ -31,7 +46,7 @@ namespace PulsePanel.Api.Controllers
             var server = await _serverService.UpdateHeartbeatAsync(id);
             if (server == null)
             {
-                return NotFound();
+                return ServerNotFound();
             }
             return Ok(server);
         }
@@ -48,7 +63,7 @@ namespace PulsePanel.Api.Controllers
             var server = await _serverService.GetByIDAsync(id);
             if (server == null)
             {
-                return NotFound();
+                return ServerNotFound();
             }
             return Ok(server);
         }
@@ -58,8 +73,8 @@ namespace PulsePanel.Api.Controllers
         {
             var server = await _serverService.UpdateAsync(id, request);
             if (server == null)
-            {  
-                return NotFound(); 
+            {
+                return ServerNotFound();
             }
             return Ok(server);
         }
@@ -68,7 +83,7 @@ namespace PulsePanel.Api.Controllers
         public async Task<IActionResult> DeleteServerAsync(Guid id)
         {
             if (await _serverService.DeleteAsync(id)) { return NoContent();}
-            return NotFound();
+            return ServerNotFound();
         }
 
     }
