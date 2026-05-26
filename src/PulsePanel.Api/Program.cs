@@ -1,5 +1,7 @@
 using PulsePanel.Api.Extensions;
 using PulsePanel.Api.Middleware;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +15,19 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
 
+// Log settings
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/pulsepanel-.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Host.UseSerilog();
+
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
