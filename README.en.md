@@ -1,7 +1,5 @@
 # 🚀 PulsePanel
 
-🌐 **Russian version:** [README.ru.md](README.ru.md)
-
 **PulsePanel** is a backend API for server inventory and monitoring.
 
 The project is educational, but it follows a practical backend structure: server CRUD, heartbeat updates, online/offline/unknown status calculation, dashboard summary, search, sorting, structured error responses, and logging.
