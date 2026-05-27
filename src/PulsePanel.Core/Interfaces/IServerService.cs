@@ -7,7 +7,7 @@ namespace PulsePanel.Core.Interfaces
     public interface IServerService
     {
         Task<ServerResponse> CreateAsync(CreateServerRequest request);
-        Task<IReadOnlyList<ServerResponse>> GetAllAsync();
+        Task<IReadOnlyList<ServerResponse>> GetAllAsync(GetServersRequest request);
         Task<ServerResponse?> GetByIDAsync(Guid id);
         Task<ServerResponse?> UpdateHeartbeatAsync(Guid id);
         

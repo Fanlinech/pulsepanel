@@ -18,6 +18,8 @@ public class ServerService : IServerService
         _statusCalc = statusCalc;
     }
 
+
+
     public async Task<ServerResponse> CreateAsync(CreateServerRequest request)
     {
         var newServer = new Server
@@ -45,10 +47,25 @@ public class ServerService : IServerService
         };
         }
 
-    public async Task<IReadOnlyList<ServerResponse>> GetAllAsync()
+    public async Task<IReadOnlyList<ServerResponse>> GetAllAsync(GetServersRequest request)
     {
-        var servers = await _dbContext.Servers
+        var query = _dbContext.Servers
             .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            var search = request.Search.Trim().ToLower();
+
+            query = query.Where(server =>
+                server.Name.ToLower().Contains(search) ||
+                server.Host.ToLower().Contains(search) ||
+                (server.Description != null && server.Description.ToLower().Contains(search)));
+        }
+
+        var servers = await query.ToListAsync();
+
+        var response = servers
             .Select(server => new ServerResponse
             {
                 Id = server.Id,
@@ -59,9 +76,37 @@ public class ServerService : IServerService
                 LastHeartbeatAt = server.LastHeartbeatAt,
                 Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
             })
-            .ToListAsync();
+            .AsEnumerable();
 
-        return servers;
+        var sortBy = request.SortBy?.ToLower() ?? "createdat";
+        var sortDirection = request.SortDirection?.ToLower() ?? "desc";
+
+        response = sortBy switch
+        {
+            "name" => sortDirection == "asc"
+                ? response.OrderBy(server => server.Name)
+                : response.OrderByDescending(server => server.Name),
+
+            "host" => sortDirection == "asc"
+                ? response.OrderBy(server => server.Host)
+                : response.OrderByDescending(server => server.Host),
+
+            "status" => sortDirection == "asc"
+                ? response.OrderBy(server => server.Status)
+                : response.OrderByDescending(server => server.Status),
+
+            "lastheartbeatat" => sortDirection == "asc"
+                ? response.OrderBy(server => server.LastHeartbeatAt)
+                : response.OrderByDescending(server => server.LastHeartbeatAt),
+
+            "createdat" => sortDirection == "asc"
+                ? response.OrderBy(server => server.CreatedAt)
+                : response.OrderByDescending(server => server.CreatedAt),
+
+            _ => response.OrderByDescending(server => server.CreatedAt)
+        };
+
+        return response.ToList();
     }
 
     public async Task<ServerResponse?> GetByIDAsync(Guid id)

@@ -51,9 +51,10 @@ namespace PulsePanel.Api.Controllers
             return Ok(server);
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllServers()
+        public async Task<IActionResult> GetAll([FromQuery] GetServersRequest request)
         {
-            var servers = await _serverService.GetAllAsync();
+            var servers = await _serverService.GetAllAsync(request);
+
             return Ok(servers);
         }
 
