@@ -1,5 +1,7 @@
 # 🚀 PulsePanel
 
+🌐 **Russian version:** [README.ru.md](README.ru.md)
+
 **PulsePanel** is a backend API for server inventory and monitoring.
 
 The project is educational, but it follows a practical backend structure: server CRUD, heartbeat updates, online/offline/unknown status calculation, dashboard summary, search, sorting, structured error responses, and logging.
@@ -45,22 +47,8 @@ The project is educational, but it follows a practical backend structure: server
 PulsePanel
 ├── src
 │   ├── PulsePanel.Api
-│   │   ├── Controllers
-│   │   ├── Extensions
-│   │   ├── Middleware
-│   │   ├── Program.cs
-│   │   └── Dockerfile
-│   │
 │   ├── PulsePanel.Core
-│   │   ├── DTOs
-│   │   ├── Entities
-│   │   ├── Enums
-│   │   ├── Interfaces
-│   │   └── Services
-│   │
 │   └── PulsePanel.Infrastructure
-│       ├── Persistence
-│       └── Services
 │
 ├── tests
 │   └── PulsePanel.Tests
@@ -68,33 +56,76 @@ PulsePanel
 ├── deploy
 │   └── docker-compose.yml
 │
+├── docs
+│   └── readme
+│       ├── README.en.md
+│       └── README.ru.md
+│
 ├── README.md
-├── README.ru.md
-├── README.en.md
 └── PulsePanel.slnx
 ```
 
 ## ⚙️ Getting Started
 
-1. Start PostgreSQL:
+### 1. Requirements
+
+- .NET 10 SDK
+- Docker Desktop
+- EF Core CLI tool
+
+If `dotnet ef` is not installed:
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+
+### 2. Start PostgreSQL
 
 ```bash
 docker compose -f deploy/docker-compose.yml up -d
 ```
 
-2. Apply migrations:
+Check that PostgreSQL is running:
+
+```bash
+docker compose -f deploy/docker-compose.yml ps
+```
+
+### 3. Create a migration when the database schema changes
+
+Create a new migration only if you changed an entity, `AppDbContext`, or EF Core configuration.
+
+```bash
+dotnet ef migrations add MigrationName --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
+```
+
+Example:
+
+```bash
+dotnet ef migrations add InitialCreate --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
+```
+
+If you changed only controllers, services, request DTOs, logging, or README files, a new migration is not required.
+
+### 4. Apply migrations to the database
 
 ```bash
 dotnet ef database update --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
 ```
 
-3. Run the API:
+### 5. Build the solution
+
+```bash
+dotnet build PulsePanel.slnx
+```
+
+### 6. Run the API
 
 ```bash
 dotnet run --project src/PulsePanel.Api
 ```
 
-4. Open Swagger:
+### 7. Open Swagger
 
 ```text
 http://localhost:5264/swagger
@@ -144,8 +175,6 @@ Server status is calculated from `LastHeartbeatAt`:
 
 ## 📊 Dashboard Summary
 
-Endpoint:
-
 ```http
 GET /api/dashboard/summary
 ```
@@ -185,9 +214,3 @@ Serilog writes logs to:
 - `logs/pulsepanel-YYYYMMDD.log`
 
 Log files are ignored by git.
-
-## 🧪 Build
-
-```bash
-dotnet build PulsePanel.slnx
-```
