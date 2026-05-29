@@ -79,7 +79,44 @@ If `dotnet ef` is not installed:
 dotnet tool install --global dotnet-ef
 ```
 
-### 2. Start PostgreSQL
+## 🐳 Run with Docker Compose
+
+Use this option when you want to start the full stack: API + PostgreSQL.
+
+```bash
+docker compose -f deploy/docker-compose.yml up -d --build
+```
+
+Check running containers:
+
+```bash
+docker compose -f deploy/docker-compose.yml ps
+```
+
+Open Swagger:
+
+```text
+http://localhost:8080/swagger
+```
+
+Useful Docker commands:
+
+```bash
+docker compose -f deploy/docker-compose.yml logs -f api
+docker compose -f deploy/docker-compose.yml down
+```
+
+In Docker, the API connects to PostgreSQL through the internal service name:
+
+```text
+Host=postgres;Port=5432;Database=pulsepanel;Username=pulsepanel;Password=***
+```
+
+## 💻 Run Locally
+
+Use this option when you run the API from Visual Studio or `dotnet run`, while PostgreSQL runs in Docker.
+
+### 2. Start PostgreSQL only
 
 ```bash
 docker compose -f deploy/docker-compose.yml up -d

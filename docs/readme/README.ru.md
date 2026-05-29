@@ -79,7 +79,44 @@ PulsePanel
 dotnet tool install --global dotnet-ef
 ```
 
-### 2. Запустить PostgreSQL
+## 🐳 Запуск через Docker Compose
+
+Используй этот вариант, если хочешь запустить весь стек сразу: API + PostgreSQL.
+
+```bash
+docker compose -f deploy/docker-compose.yml up -d --build
+```
+
+Проверить запущенные контейнеры:
+
+```bash
+docker compose -f deploy/docker-compose.yml ps
+```
+
+Открыть Swagger:
+
+```text
+http://localhost:8080/swagger
+```
+
+Полезные Docker-команды:
+
+```bash
+docker compose -f deploy/docker-compose.yml logs -f api
+docker compose -f deploy/docker-compose.yml down
+```
+
+В Docker API подключается к PostgreSQL через внутреннее имя сервиса:
+
+```text
+Host=postgres;Port=5432;Database=pulsepanel;Username=pulsepanel;Password=***
+```
+
+## 💻 Локальный запуск
+
+Используй этот вариант, если запускаешь API через Visual Studio или `dotnet run`, а PostgreSQL держишь в Docker.
+
+### 2. Запустить только PostgreSQL
 
 ```bash
 docker compose -f deploy/docker-compose.yml up -d
