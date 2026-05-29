@@ -4,7 +4,7 @@
 
 **PulsePanel** — backend API для учёта и мониторинга серверов.
 
-Проект построен как учебный, но приближенный к реальному backend-сервису: есть CRUD для серверов, heartbeat, расчёт online/offline/unknown статусов, dashboard summary, поиск, сортировка, единый формат ошибок и логирование.
+Это pet-проект с практичной backend-структурой: есть CRUD для серверов, heartbeat, расчёт online/offline/unknown статусов, dashboard summary, поиск, сортировка, единый формат ошибок и логирование.
 
 ---
 
@@ -243,7 +243,7 @@ GET /api/dashboard/summary
 
 Неожиданные ошибки проходят через `ExceptionHandlingMiddleware` и возвращают `500`.
 
-## 🪵 Логирование
+## 📑 Логирование
 
 Serilog пишет логи:
 

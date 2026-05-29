@@ -4,7 +4,7 @@
 
 **PulsePanel** is a backend API for server inventory and monitoring.
 
-The project is educational, but it follows a practical backend structure: server CRUD, heartbeat updates, online/offline/unknown status calculation, dashboard summary, search, sorting, structured error responses, and logging.
+This is a pet project that follows a practical backend structure: server CRUD, heartbeat updates, online/offline/unknown status calculation, dashboard summary, search, sorting, structured error responses, and logging.
 
 ---
 
@@ -243,7 +243,7 @@ Example response:
 
 Unexpected errors are handled by `ExceptionHandlingMiddleware` and returned as `500` responses.
 
-## 🪵 Logging
+## 📑 Logging
 
 Serilog writes logs to:
 
