@@ -13,6 +13,8 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/PulsePanel.Api/PulsePanel.Api.csproj", "src/PulsePanel.Api/"]
+COPY ["src/PulsePanel.Core/PulsePanel.Core.csproj", "src/PulsePanel.Core/"]
+COPY ["src/PulsePanel.Infrastructure/PulsePanel.Infrastructure.csproj", "src/PulsePanel.Infrastructure/"]
 RUN dotnet restore "./src/PulsePanel.Api/PulsePanel.Api.csproj"
 COPY . .
 WORKDIR "/src/src/PulsePanel.Api"

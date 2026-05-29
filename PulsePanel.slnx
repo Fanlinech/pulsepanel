@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Deploy/">
+    <File Path="docker-compose.yml" />
+  </Folder>
   <Project Path="src/PulsePanel.Api/PulsePanel.Api.csproj" Id="03cfd676-9638-4a49-a6d2-3dd76ff9683e" />
   <Project Path="src/PulsePanel.Core/PulsePanel.Core.csproj" Id="a50273cc-f360-4418-93fe-c0a11dd7278e" />
   <Project Path="src/PulsePanel.Infrastructure/PulsePanel.Infrastructure.csproj" Id="d4922992-51fe-4b88-a858-a0e9786bd557" />

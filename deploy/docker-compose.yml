@@ -1,6 +1,22 @@
 name: pulsepanel
 
 services:
+  api:
+    build:
+      context: ..
+      dockerfile: src/PulsePanel.Api/Dockerfile
+    container_name: pulsepanel-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB:-pulsepanel};Username=${POSTGRES_USER:-pulsepanel};Password=${POSTGRES_PASSWORD:-pulsepanel_password}
+    ports:
+      - "${API_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     image: postgres:16
     container_name: pulsepanel-postgres
