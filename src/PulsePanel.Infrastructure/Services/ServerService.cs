@@ -18,8 +18,6 @@ public class ServerService : IServerService
         _statusCalc = statusCalc;
     }
 
-
-
     public async Task<ServerResponse> CreateAsync(CreateServerRequest request)
     {
         var newServer = new Server
@@ -27,7 +25,11 @@ public class ServerService : IServerService
             Id = Guid.NewGuid(),
             Name = request.Name,
             Host = request.Host,
+            CheckPort = request.CheckPort,
             Description = request.Description,
+            LastCheckAt = DateTime.UtcNow,
+            LastCheckMessage = null,
+            LastResponseTimeMs = 0,
             CreatedAt = DateTime.UtcNow,
             Status = ServerStatus.Unknown
         };
@@ -40,8 +42,12 @@ public class ServerService : IServerService
             Id = newServer.Id,
             Name = newServer.Name,
             Host = newServer.Host,
+            CheckPort = newServer.CheckPort,
             Description = newServer.Description,
             CreatedAt = newServer.CreatedAt,
+            LastCheckAt = newServer.LastCheckAt,
+            LastCheckMessage = newServer.LastCheckMessage,
+            LastResponseTimeMs = newServer.LastResponseTimeMs,
             LastHeartbeatAt = newServer.LastHeartbeatAt,
             Status = _statusCalc.GetStatus(newServer.LastHeartbeatAt)
         };
@@ -71,8 +77,12 @@ public class ServerService : IServerService
                 Id = server.Id,
                 Name = server.Name,
                 Host = server.Host,
+                CheckPort = server.CheckPort,
                 Description = server.Description,
                 CreatedAt = server.CreatedAt,
+                LastCheckAt = server.LastCheckAt,
+                LastCheckMessage = server.LastCheckMessage,
+                LastResponseTimeMs = server.LastResponseTimeMs,
                 LastHeartbeatAt = server.LastHeartbeatAt,
                 Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
             })
@@ -119,8 +129,12 @@ public class ServerService : IServerService
             Id = server.Id,
             Name = server.Name,
             Host = server.Host,
+            CheckPort = server.CheckPort,
             Description = server.Description,
             CreatedAt = server.CreatedAt,
+            LastCheckAt = server.LastCheckAt,
+            LastCheckMessage = server.LastCheckMessage,
+            LastResponseTimeMs = server.LastResponseTimeMs,
             LastHeartbeatAt = server.LastHeartbeatAt,
             Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
         })
@@ -139,8 +153,12 @@ public class ServerService : IServerService
             Id = server.Id,
             Name = server.Name,
             Host = server.Host,
+            CheckPort = server.CheckPort,
             Description = server.Description,
             CreatedAt = server.CreatedAt,
+            LastCheckAt = server.LastCheckAt,
+            LastCheckMessage = server.LastCheckMessage,
+            LastResponseTimeMs = server.LastResponseTimeMs,
             LastHeartbeatAt = server.LastHeartbeatAt,
             Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
         };
@@ -152,6 +170,7 @@ public class ServerService : IServerService
         if (server is null) { return null; }
         server.Name = request.Name;
         server.Host = request.Host;
+        server.CheckPort = request.CheckPort;
         server.Description = request.Description;
         await _dbContext.SaveChangesAsync();
         return new ServerResponse
@@ -159,8 +178,12 @@ public class ServerService : IServerService
             Id = server.Id,
             Name = server.Name,
             Host = server.Host,
+            CheckPort = server.CheckPort,
             Description = server.Description,
             CreatedAt = server.CreatedAt,
+            LastCheckAt = server.LastCheckAt,
+            LastCheckMessage = server.LastCheckMessage,
+            LastResponseTimeMs = server.LastResponseTimeMs,
             LastHeartbeatAt = server.LastHeartbeatAt,
             Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
         };

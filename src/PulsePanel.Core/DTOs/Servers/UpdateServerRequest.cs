@@ -16,5 +16,7 @@ namespace PulsePanel.Core.DTOs.Servers
         public required string Host { get; set; }
         [MaxLength(500)]
         public string? Description { get; set; }
+        [Range(1, 65535)]
+        public ushort CheckPort { get; set; } = 80;
     }
 }
