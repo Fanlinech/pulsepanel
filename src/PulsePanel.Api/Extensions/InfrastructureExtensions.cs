@@ -20,6 +20,7 @@ public static class InfrastructureExtensions
 
         services.AddScoped<IServerService, ServerService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IServerCheckService, ServerCheckService>();
         services.AddSingleton<ServerStatusCalculator>();
         return services;
     }

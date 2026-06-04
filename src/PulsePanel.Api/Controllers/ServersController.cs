@@ -12,6 +12,7 @@ namespace PulsePanel.Api.Controllers
     public class ServersController : ControllerBase
     {
         private readonly IServerService _serverService;
+        private readonly IServerCheckService _serverCheckService;
 
         private NotFoundObjectResult ServerNotFound()
         {
@@ -25,9 +26,10 @@ namespace PulsePanel.Api.Controllers
 
             return NotFound(error);
         }
-        public ServersController(IServerService serverService)
+        public ServersController(IServerService serverService, IServerCheckService serverCheckService)
         {
             _serverService = serverService;
+            _serverCheckService = serverCheckService;
         }
 
         [HttpPost]
@@ -50,6 +52,15 @@ namespace PulsePanel.Api.Controllers
             }
             return Ok(server);
         }
+
+        [HttpPost("{id:guid}/check")]
+        public async Task<ActionResult<CheckServerResponse>> CheckServer(Guid id)
+        {
+            var serverResponse = await _serverCheckService.CheckAsync(id);
+            if (serverResponse is null) { return ServerNotFound(); }
+            return Ok(serverResponse);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] GetServersRequest request)
         {

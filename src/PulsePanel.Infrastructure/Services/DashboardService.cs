@@ -38,7 +38,7 @@ namespace PulsePanel.Infrastructure.Services
                 Description = server.Description,
                 CreatedAt = server.CreatedAt,
                 LastHeartbeatAt = server.LastHeartbeatAt,
-                Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
+                Status = _statusCalc.GetStatus(server.LastHeartbeatAt, server.LastCheckAt, server.LastCheckMessage)
             })
             .ToListAsync();
 

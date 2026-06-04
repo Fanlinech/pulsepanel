@@ -9,14 +9,14 @@ namespace PulsePanel.Core.Services
     {
 
         public ServerStatusCalculator() { }
-        public ServerStatus GetStatus(DateTime? LastHeartbeatAt)
+        public ServerStatus GetStatus(DateTime? LastHeartbeatAt, DateTime? LastCheckAt, string? LastCheckMessage)
         {
-            if (LastHeartbeatAt is null)
+            if (LastHeartbeatAt is null && LastCheckAt is null)
             {
                 return ServerStatus.Unknown;
             }
 
-            return LastHeartbeatAt >= DateTime.UtcNow.AddMinutes(-5)
+            return LastHeartbeatAt >= DateTime.UtcNow.AddMinutes(-5) || (LastCheckAt >= DateTime.UtcNow.AddMinutes(-5) && LastCheckMessage == "Connection successful")
                 ? ServerStatus.Online
                 : ServerStatus.Offline;
         }

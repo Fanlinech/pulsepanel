@@ -49,7 +49,7 @@ public class ServerService : IServerService
             LastCheckMessage = newServer.LastCheckMessage,
             LastResponseTimeMs = newServer.LastResponseTimeMs,
             LastHeartbeatAt = newServer.LastHeartbeatAt,
-            Status = _statusCalc.GetStatus(newServer.LastHeartbeatAt)
+            Status = _statusCalc.GetStatus(newServer.LastHeartbeatAt,newServer.LastCheckAt, newServer.LastCheckMessage)
         };
         }
 
@@ -84,7 +84,7 @@ public class ServerService : IServerService
                 LastCheckMessage = server.LastCheckMessage,
                 LastResponseTimeMs = server.LastResponseTimeMs,
                 LastHeartbeatAt = server.LastHeartbeatAt,
-                Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
+                Status = _statusCalc.GetStatus(server.LastHeartbeatAt, server.LastCheckAt, server.LastCheckMessage)
             })
             .AsEnumerable();
 
@@ -136,7 +136,7 @@ public class ServerService : IServerService
             LastCheckMessage = server.LastCheckMessage,
             LastResponseTimeMs = server.LastResponseTimeMs,
             LastHeartbeatAt = server.LastHeartbeatAt,
-            Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
+            Status = _statusCalc.GetStatus(server.LastHeartbeatAt, server.LastCheckAt, server.LastCheckMessage)
         })
         .FirstOrDefaultAsync();
     }
@@ -160,7 +160,7 @@ public class ServerService : IServerService
             LastCheckMessage = server.LastCheckMessage,
             LastResponseTimeMs = server.LastResponseTimeMs,
             LastHeartbeatAt = server.LastHeartbeatAt,
-            Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
+            Status = _statusCalc.GetStatus(server.LastHeartbeatAt, server.LastCheckAt, server.LastCheckMessage)
         };
     }
 
@@ -185,7 +185,7 @@ public class ServerService : IServerService
             LastCheckMessage = server.LastCheckMessage,
             LastResponseTimeMs = server.LastResponseTimeMs,
             LastHeartbeatAt = server.LastHeartbeatAt,
-            Status = _statusCalc.GetStatus(server.LastHeartbeatAt)
+            Status = _statusCalc.GetStatus(server.LastHeartbeatAt, server.LastCheckAt, server.LastCheckMessage)
         };
     }
 
