@@ -1,110 +1,80 @@
 # PulsePanel
 
-Russian version: [README.ru.md](README.ru.md)
+Russian version: [../../README.md](../../README.md)
 
-PulsePanel is a backend API for server inventory and monitoring.
+PulsePanel is a web application for server inventory and monitoring.
 
-The project stores servers, updates heartbeats, runs TCP availability checks, checks servers automatically in the background, and returns status summaries.
+The project contains an ASP.NET Core backend API and a Vue.js frontend panel. The UI can create servers, update heartbeat state, run TCP availability checks, display statuses, and manage the server list.
 
-## Features
+## Structure
 
-- server CRUD
-- heartbeat endpoint
-- manual TCP check by `Host` and `CheckPort`
-- automatic background server checks
-- `Unknown`, `Online`, `Offline` status calculation
-- dashboard summary
-- search and sorting
-- DTO validation
-- consistent error responses
-- Serilog logging
-- PostgreSQL via Docker Compose
-- Swagger / OpenAPI
-- unit tests
+```text
+PulsePanel
+├── backend
+│   ├── src
+│   ├── tests
+│   ├── PulsePanel.slnx
+│   └── README.md
+│
+├── frontend
+│   ├── src
+│   ├── package.json
+│   └── README.md
+│
+├── docker-compose.yml
+├── README.md
+└── LICENSE.txt
+```
 
 ## Stack
+
+Backend:
 
 - .NET 10
 - ASP.NET Core Web API
 - Entity Framework Core
-- Npgsql
 - PostgreSQL 16
-- Docker / Docker Compose
-- Swagger / OpenAPI
 - Serilog
 - xUnit
 
-## Run With Docker Compose
+Frontend:
+
+- Vue.js
+- TypeScript
+- PrimeVue
+- Vite
+- Nginx for Docker builds
+
+## Run The Full Application
+
+From the repository root:
 
 ```bash
-docker compose -f deploy/docker-compose.yml up -d --build
+docker-compose up -d --build
 ```
 
-Swagger:
+Available endpoints:
 
 ```text
-http://localhost:8080/swagger
+Frontend: http://localhost:3000
+Backend API: http://localhost:8080
+Swagger: http://localhost:8080/swagger
+PostgreSQL: localhost:5433
 ```
 
-## Local Run
-
-Start PostgreSQL:
+Stop:
 
 ```bash
-docker compose -f deploy/docker-compose.yml up -d postgres
+docker-compose down
 ```
 
-Create a migration when the database schema changes:
+Logs:
 
 ```bash
-dotnet ef migrations add MigrationName --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
+docker-compose logs -f
 ```
 
-Apply migrations:
+## Documentation
 
-```bash
-dotnet ef database update --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
-```
-
-Run the API:
-
-```bash
-dotnet run --project src/PulsePanel.Api
-```
-
-Swagger:
-
-```text
-http://localhost:5264/swagger
-```
-
-## API
-
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `POST` | `/api/servers` | Create server |
-| `GET` | `/api/servers` | Get server list |
-| `GET` | `/api/servers/{id}` | Get server by id |
-| `PUT` | `/api/servers/{id}` | Update server |
-| `DELETE` | `/api/servers/{id}` | Delete server |
-| `POST` | `/api/servers/{id}/heartbeat` | Update heartbeat |
-| `POST` | `/api/servers/{id}/check` | Run TCP check |
-| `GET` | `/api/dashboard/summary` | Get summary |
-
-## ServerChecks
-
-```json
-{
-  "ServerChecks": {
-    "Enabled": true,
-    "IntervalSeconds": 60,
-    "TimeoutSeconds": 3
-  }
-}
-```
-
-## Tests
-
-```bash
-dotnet test PulsePanel.slnx
-```
+- Backend: [../../backend/README.md](../../backend/README.md)
+- Frontend: [../../frontend/README.md](../../frontend/README.md)

@@ -1,0 +1,72 @@
+name: pulsepanel
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pulsepanel-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: src/PulsePanel.Api/Dockerfile
+    container_name: pulsepanel-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB:-pulsepanel};Username=${POSTGRES_USER:-pulsepanel};Password=${POSTGRES_PASSWORD:-pulsepanel_password}
+    ports:
+      - "${API_PORT:-8080}:8080"
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+
+  migrator:
+    image: mcr.microsoft.com/dotnet/sdk:10.0
+    container_name: pulsepanel-migrator
+    working_dir: /workspace
+    environment:
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB:-pulsepanel};Username=${POSTGRES_USER:-pulsepanel};Password=${POSTGRES_PASSWORD:-pulsepanel_password}
+    volumes:
+      - ./backend:/workspace
+    command: >
+      sh -c "rm -rf src/PulsePanel.Api/bin src/PulsePanel.Api/obj
+      src/PulsePanel.Core/bin src/PulsePanel.Core/obj
+      src/PulsePanel.Infrastructure/bin src/PulsePanel.Infrastructure/obj
+      tests/PulsePanel.Tests/bin tests/PulsePanel.Tests/obj &&
+      dotnet restore src/PulsePanel.Api/PulsePanel.Api.csproj &&
+      dotnet tool install --global dotnet-ef --version 10.0.8 &&
+      /root/.dotnet/tools/dotnet-ef database update
+      --project src/PulsePanel.Infrastructure
+      --startup-project src/PulsePanel.Api"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16
+    container_name: pulsepanel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pulsepanel}
+      POSTGRES_USER: ${POSTGRES_USER:-pulsepanel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pulsepanel_password}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - pulsepanel-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pulsepanel-postgres-data:

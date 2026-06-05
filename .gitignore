@@ -73,6 +73,8 @@ efbundle*
 *.mdf
 *.ldf
 Migrations/
+!backend/src/PulsePanel.Infrastructure/Persistence/Migrations/
+!backend/src/PulsePanel.Infrastructure/Persistence/Migrations/**
 
 # NuGet
 *.nupkg
@@ -94,4 +96,10 @@ $RECYCLE.BIN/
 *.swp
 *.swo
 
-
+# Frontend
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
