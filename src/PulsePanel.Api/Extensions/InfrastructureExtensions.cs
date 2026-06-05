@@ -4,6 +4,7 @@ using PulsePanel.Infrastructure.Persistence;
 using PulsePanel.Infrastructure.Services;
 using PulsePanel.Core.Services;
 using PulsePanel.Core.Options;
+using PulsePanel.Infrastructure.BackgroundServices;
 namespace PulsePanel.Api.Extensions;
 
 public static class InfrastructureExtensions
@@ -22,6 +23,8 @@ public static class InfrastructureExtensions
 
         services.Configure<ServerCheckOptions>(
             configuration.GetSection("ServerChecks"));
+
+        services.AddHostedService<ServerCheckBackgroundService>();
 
         services.AddScoped<IServerService, ServerService>();
         services.AddScoped<IDashboardService, DashboardService>();

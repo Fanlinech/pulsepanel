@@ -8,5 +8,7 @@ namespace PulsePanel.Core.Interfaces
     public interface IServerCheckService
     {
         Task<CheckServerResponse?> CheckAsync(Guid ServerId);
+
+        Task<IReadOnlyList<CheckServerResponse>> CheckAllAsync();
     }
 }

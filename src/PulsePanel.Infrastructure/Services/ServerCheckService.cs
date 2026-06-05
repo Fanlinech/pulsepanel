@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace PulsePanel.Infrastructure.Services
 {
@@ -120,6 +122,27 @@ namespace PulsePanel.Infrastructure.Services
                     Message = server.LastCheckMessage
                 };
             }
+        }
+
+        public async Task<IReadOnlyList<CheckServerResponse>> CheckAllAsync()
+        {
+            var serverIds = await _dbContext.Servers
+                .Select(server => server.Id)
+                .ToListAsync();
+
+            var results = new List<CheckServerResponse>();
+
+            foreach (var serverId in serverIds)
+            {
+                var result = await CheckAsync(serverId);
+
+                if (result is not null)
+                {
+                    results.Add(result);
+                }
+            }
+
+            return results;
         }
     }
 }
