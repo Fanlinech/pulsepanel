@@ -1,44 +1,40 @@
-# 🚀 PulsePanel
+# PulsePanel
 
-🌐 **English version:** [README.en.md](README.en.md)
+English version: [README.en.md](README.en.md)
 
-**PulsePanel** — backend API для учёта и мониторинга серверов.
+PulsePanel — backend API для учёта и мониторинга серверов.
 
-Это pet-проект на ASP.NET Core: серверы можно добавлять, обновлять, удалять, проверять вручную через TCP-check, автоматически проверять в фоне, обновлять heartbeat и смотреть сводку по статусам.
+Проект позволяет хранить список серверов, обновлять heartbeat, выполнять TCP-проверку доступности, автоматически проверять серверы в фоне и получать сводку по статусам.
 
----
+## Возможности
 
-## 📌 Возможности
+- CRUD для серверов
+- heartbeat endpoint
+- ручная TCP-проверка сервера по `Host` и `CheckPort`
+- автоматическая фоновая проверка серверов
+- расчёт статусов `Unknown`, `Online`, `Offline`
+- dashboard summary
+- поиск и сортировка
+- валидация DTO
+- единый формат ошибок
+- логирование через Serilog
+- PostgreSQL через Docker Compose
+- Swagger / OpenAPI
+- unit-тесты
 
-- ✅ CRUD для серверов
-- ✅ Heartbeat endpoint
-- ✅ Ручная TCP-проверка сервера по `Host:CheckPort`
-- ✅ Автоматическая фоновая проверка серверов
-- ✅ Расчёт статусов `Unknown`, `Online`, `Offline`
-- ✅ Dashboard summary
-- ✅ Поиск и сортировка
-- ✅ Валидация DTO
-- ✅ Единый формат ошибок
-- ✅ Serilog-логирование
-- ✅ PostgreSQL через Docker Compose
-- ✅ Swagger / OpenAPI
-- ✅ Unit-тесты
+## Стек
 
-## 🧱 Стек
+- .NET 10
+- ASP.NET Core Web API
+- Entity Framework Core
+- Npgsql
+- PostgreSQL 16
+- Docker / Docker Compose
+- Swagger / OpenAPI
+- Serilog
+- xUnit
 
-- **.NET 10**
-- **ASP.NET Core Web API**
-- **Entity Framework Core**
-- **Npgsql**
-- **PostgreSQL 16**
-- **Docker / Docker Compose**
-- **Swagger / OpenAPI**
-- **Serilog**
-- **xUnit**
-
-## ⚙️ Запуск
-
-### Docker Compose
+## Запуск через Docker Compose
 
 ```bash
 docker compose -f deploy/docker-compose.yml up -d --build
@@ -50,9 +46,9 @@ Swagger:
 http://localhost:8080/swagger
 ```
 
-### Локально через Visual Studio / dotnet run
+## Локальный запуск
 
-Запустить только PostgreSQL:
+Запустить PostgreSQL:
 
 ```bash
 docker compose -f deploy/docker-compose.yml up -d postgres
@@ -82,7 +78,7 @@ Swagger:
 http://localhost:5264/swagger
 ```
 
-## 🔌 API endpoints
+## API
 
 | Method | Endpoint | Описание |
 | --- | --- | --- |
@@ -93,9 +89,9 @@ http://localhost:5264/swagger
 | `DELETE` | `/api/servers/{id}` | Удалить сервер |
 | `POST` | `/api/servers/{id}/heartbeat` | Обновить heartbeat |
 | `POST` | `/api/servers/{id}/check` | Выполнить TCP-проверку |
-| `GET` | `/api/dashboard/summary` | Получить dashboard summary |
+| `GET` | `/api/dashboard/summary` | Получить сводку |
 
-## ⏱️ ServerChecks
+## ServerChecks
 
 ```json
 {
@@ -107,7 +103,7 @@ http://localhost:5264/swagger
 }
 ```
 
-## ✅ Тесты
+## Тесты
 
 ```bash
 dotnet test PulsePanel.slnx
