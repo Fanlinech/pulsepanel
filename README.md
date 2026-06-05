@@ -1,34 +1,35 @@
 # 🚀 PulsePanel
 
-🌐 **Russian version:** [docs/readme/README.ru.md](docs/readme/README.ru.md)
+🌐 **English version:** [docs/readme/README.en.md](docs/readme/README.en.md)
 
-**PulsePanel** is a backend API for server inventory and monitoring.
+**PulsePanel** — backend API для учёта и мониторинга серверов.
 
-This is a pet project that follows a practical backend structure: server CRUD, heartbeat updates, online/offline/unknown status calculation, dashboard summary, search, sorting, structured error responses, and logging.
+Это pet-проект на ASP.NET Core: серверы можно добавлять, обновлять, удалять, проверять вручную через TCP-check, автоматически проверять в фоне, обновлять heartbeat и смотреть сводку по статусам.
 
 ---
 
-## 📌 Current Features
+## 📌 Возможности
 
-- ✅ Create server
-- ✅ Get server list
-- ✅ Get server by `id`
-- ✅ Update server
-- ✅ Delete server
+- ✅ CRUD для серверов
+- ✅ Получение списка серверов
+- ✅ Получение сервера по `id`
 - ✅ Heartbeat endpoint
-- ✅ Automatic server status calculation
+- ✅ Ручная TCP-проверка сервера по `Host:CheckPort`
+- ✅ Автоматическая фоновая проверка серверов
+- ✅ Расчёт статусов `Unknown`, `Online`, `Offline`
 - ✅ Dashboard summary
-- ✅ Search by `Name`, `Host`, `Description`
-- ✅ Sort by allowed fields
-- ✅ Request DTO validation
-- ✅ Consistent `404` error format
-- ✅ Middleware for unexpected `500` errors
-- ✅ HTTP request logging with Serilog
-- ✅ Console and file logs
-- ✅ PostgreSQL via Docker Compose
+- ✅ Поиск по `Name`, `Host`, `Description`
+- ✅ Сортировка по разрешённым полям
+- ✅ Валидация request DTO
+- ✅ Единый формат `404` ошибок
+- ✅ Middleware для неожиданных `500` ошибок
+- ✅ Логирование HTTP-запросов через Serilog
+- ✅ Логи в консоль и файл
+- ✅ PostgreSQL через Docker Compose
 - ✅ Swagger / OpenAPI
+- ✅ Unit-тесты для калькулятора статусов, сервисов и DTO
 
-## 🧱 Tech Stack
+## 🧱 Стек
 
 - **.NET 10**
 - **ASP.NET Core Web API**
@@ -41,7 +42,7 @@ This is a pet project that follows a practical backend structure: server CRUD, h
 - **Serilog**
 - **xUnit**
 
-## 📂 Project Structure
+## 📂 Структура проекта
 
 ```text
 PulsePanel
@@ -65,132 +66,132 @@ PulsePanel
 └── PulsePanel.slnx
 ```
 
-## ⚙️ Getting Started
-
-### 1. Requirements
+## ⚙️ Требования
 
 - .NET 10 SDK
 - Docker Desktop
 - EF Core CLI tool
 
-If `dotnet ef` is not installed:
+Если `dotnet ef` не установлен:
 
 ```bash
 dotnet tool install --global dotnet-ef
 ```
 
-## 🐳 Run with Docker Compose
+## 🐳 Запуск через Docker Compose
 
-Use this option when you want to start the full stack: API + PostgreSQL.
+Этот вариант запускает весь стек: API + PostgreSQL.
 
 ```bash
 docker compose -f deploy/docker-compose.yml up -d --build
 ```
 
-Check running containers:
+Проверить контейнеры:
 
 ```bash
 docker compose -f deploy/docker-compose.yml ps
 ```
 
-Open Swagger:
+Swagger:
 
 ```text
 http://localhost:8080/swagger
 ```
 
-Useful Docker commands:
+Логи API:
 
 ```bash
 docker compose -f deploy/docker-compose.yml logs -f api
+```
+
+Остановить контейнеры:
+
+```bash
 docker compose -f deploy/docker-compose.yml down
 ```
 
-In Docker, the API connects to PostgreSQL through the internal service name:
+В Docker API подключается к PostgreSQL через внутреннее имя сервиса:
 
 ```text
 Host=postgres;Port=5432;Database=pulsepanel;Username=pulsepanel;Password=***
 ```
 
-## 💻 Run Locally
+## 💻 Локальный запуск
 
-Use this option when you run the API from Visual Studio or `dotnet run`, while PostgreSQL runs in Docker.
+Этот вариант удобен для Visual Studio: API запускается локально, а PostgreSQL работает в Docker.
 
-### 2. Start PostgreSQL only
-
-```bash
-docker compose -f deploy/docker-compose.yml up -d
-```
-
-Check that PostgreSQL is running:
+### 1. Запустить только PostgreSQL
 
 ```bash
-docker compose -f deploy/docker-compose.yml ps
+docker compose -f deploy/docker-compose.yml up -d postgres
 ```
 
-### 3. Create a migration when the database schema changes
+PostgreSQL будет доступен с компьютера на порту `5433`.
 
-Create a new migration only if you changed an entity, `AppDbContext`, or EF Core configuration.
+### 2. Создать миграцию, если изменилась схема БД
+
+Новая миграция нужна, если менялись entity, `AppDbContext` или EF Core configuration.
 
 ```bash
 dotnet ef migrations add MigrationName --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
 ```
 
-Example:
+Пример:
 
 ```bash
 dotnet ef migrations add InitialCreate --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
 ```
 
-If you changed only controllers, services, request DTOs, logging, or README files, a new migration is not required.
+Если менялись только контроллеры, сервисы, DTO, логирование, тесты или README, миграция не нужна.
 
-### 4. Apply migrations to the database
+### 3. Применить миграции
 
 ```bash
 dotnet ef database update --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
 ```
 
-### 5. Build the solution
+### 4. Собрать проект
 
 ```bash
 dotnet build PulsePanel.slnx
 ```
 
-### 6. Run the API
+### 5. Запустить API
 
 ```bash
 dotnet run --project src/PulsePanel.Api
 ```
 
-### 7. Open Swagger
+Swagger для локального запуска:
 
 ```text
 http://localhost:5264/swagger
 ```
 
-## 🔌 API Endpoints
+## 🔌 API endpoints
 
-| Method | Endpoint | Description |
+| Method | Endpoint | Описание |
 | --- | --- | --- |
-| `POST` | `/api/servers` | Create server |
-| `GET` | `/api/servers` | Get server list |
-| `GET` | `/api/servers/{id}` | Get server by id |
-| `PUT` | `/api/servers/{id}` | Update server |
-| `DELETE` | `/api/servers/{id}` | Delete server |
-| `POST` | `/api/servers/{id}/heartbeat` | Update heartbeat |
-| `GET` | `/api/dashboard/summary` | Get dashboard summary |
+| `POST` | `/api/servers` | Создать сервер |
+| `GET` | `/api/servers` | Получить список серверов |
+| `GET` | `/api/servers/{id}` | Получить сервер по id |
+| `PUT` | `/api/servers/{id}` | Обновить сервер |
+| `DELETE` | `/api/servers/{id}` | Удалить сервер |
+| `POST` | `/api/servers/{id}/heartbeat` | Обновить heartbeat |
+| `POST` | `/api/servers/{id}/check` | Выполнить TCP-проверку сервера |
+| `GET` | `/api/dashboard/summary` | Получить dashboard summary |
 
-## 🔎 Search and Sorting
+## 🔎 Поиск и сортировка
 
-`GET /api/servers` supports query parameters:
+`GET /api/servers` поддерживает query-параметры:
 
-| Parameter | Value |
+| Параметр | Значение |
 | --- | --- |
-| `search` | Search by `Name`, `Host`, `Description` |
+| `search` | Поиск по `Name`, `Host`, `Description` |
 | `sortBy` | `name`, `host`, `createdAt`, `status`, `lastHeartbeatAt` |
 | `sortDirection` | `asc`, `desc` |
 
-Examples:
+Примеры:
 
 ```http
 GET /api/servers?search=prod
@@ -198,25 +199,71 @@ GET /api/servers?sortBy=name&sortDirection=asc
 GET /api/servers?search=api&sortBy=createdAt&sortDirection=desc
 ```
 
-When no query parameters are provided, the endpoint works with the default behavior and sorts by `createdAt desc`.
+Если параметры не переданы, список сортируется по `createdAt desc`.
 
-## 🟢 Server Status
+## 🟢 Статусы серверов
 
-Server status is calculated from `LastHeartbeatAt`:
+Статус рассчитывается в `ServerStatusCalculator`.
 
-| Condition | Status |
+| Условие | Статус |
 | --- | --- |
-| `LastHeartbeatAt == null` | `Unknown` |
-| heartbeat is recent | `Online` |
-| heartbeat is stale | `Offline` |
+| Нет heartbeat и нет check | `Unknown` |
+| Heartbeat был меньше 5 минут назад | `Online` |
+| TCP-check был меньше 5 минут назад и успешен | `Online` |
+| Последний heartbeat/check устарел или check неуспешен | `Offline` |
 
-## 📊 Dashboard Summary
+## 🧪 TCP-проверки
+
+У сервера есть поле `CheckPort`. Ручная проверка делает TCP-подключение к:
+
+```text
+Host:CheckPort
+```
+
+Пример ответа:
+
+```json
+{
+  "serverId": "00000000-0000-0000-0000-000000000000",
+  "host": "example.com",
+  "port": 443,
+  "isAvailable": true,
+  "status": "Online",
+  "checkedAt": "2026-06-05T09:30:00Z",
+  "responseTimeMs": 42,
+  "message": "Connection successful"
+}
+```
+
+## ⏱️ Автопроверка серверов
+
+Фоновая проверка настраивается в `src/PulsePanel.Api/appsettings.json`:
+
+```json
+{
+  "ServerChecks": {
+    "Enabled": true,
+    "IntervalSeconds": 60,
+    "TimeoutSeconds": 3
+  }
+}
+```
+
+Поля:
+
+| Поле | Описание |
+| --- | --- |
+| `Enabled` | Включает или выключает автопроверку |
+| `IntervalSeconds` | Интервал между циклами проверки |
+| `TimeoutSeconds` | Timeout TCP-подключения |
+
+## 📊 Dashboard summary
 
 ```http
 GET /api/dashboard/summary
 ```
 
-Example response:
+Пример ответа:
 
 ```json
 {
@@ -224,30 +271,46 @@ Example response:
   "onlineServers": 2,
   "offlineServers": 3,
   "unknownServers": 7,
-  "lastHeartbeatAt": "2026-05-27T07:30:00Z"
+  "lastHeartbeatAt": "2026-06-05T09:30:00Z"
 }
 ```
 
-## 🧾 Error Responses
+## 🧾 Ошибки
 
-`404` responses use a consistent format:
+Для `404` используется единый формат:
 
 ```json
 {
   "message": "Server not found",
   "statusCode": 404,
-  "timeStamp": "2026-05-27T07:30:00Z",
+  "timeStamp": "2026-06-05T09:30:00Z",
   "path": "/api/servers/{id}"
 }
 ```
 
-Unexpected errors are handled by `ExceptionHandlingMiddleware` and returned as `500` responses.
+Неожиданные ошибки проходят через `ExceptionHandlingMiddleware` и возвращают `500`.
 
-## 📑 Logging
+## 📑 Логирование
 
-Serilog writes logs to:
+Serilog пишет логи:
 
-- console
-- `logs/pulsepanel-YYYYMMDD.log`
+- в консоль
+- в файл `logs/pulsepanel-YYYYMMDD.log`
 
-Log files are ignored by git.
+Папка `logs/` игнорируется Git.
+
+## ✅ Тесты
+
+Запуск тестов:
+
+```bash
+dotnet test PulsePanel.slnx
+```
+
+Покрыты:
+
+- `ServerStatusCalculator`
+- `ServerCheckService`
+- `DashboardService`
+- валидация `CreateServerRequest`
+- валидация `UpdateServerRequest`

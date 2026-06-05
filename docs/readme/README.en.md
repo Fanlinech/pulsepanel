@@ -1,38 +1,33 @@
 # 🚀 PulsePanel
 
-🌐 **Russian version:** [README.ru.md](README.ru.md)
+🌐 **Русская версия:** [README.ru.md](README.ru.md)
 
 **PulsePanel** is a backend API for server inventory and monitoring.
 
-This is a pet project that follows a practical backend structure: server CRUD, heartbeat updates, online/offline/unknown status calculation, dashboard summary, search, sorting, structured error responses, and logging.
+It is a pet project built with ASP.NET Core. Servers can be created, updated, deleted, checked manually through TCP checks, checked automatically in the background, updated through heartbeat calls, and summarized on a dashboard.
 
 ---
 
-## 📌 Current Features
+## 📌 Features
 
-- ✅ Create server
-- ✅ Get server list
-- ✅ Get server by `id`
-- ✅ Update server
-- ✅ Delete server
+- ✅ Server CRUD
 - ✅ Heartbeat endpoint
-- ✅ Automatic server status calculation
+- ✅ Manual TCP check by `Host:CheckPort`
+- ✅ Automatic background server checks
+- ✅ `Unknown`, `Online`, `Offline` status calculation
 - ✅ Dashboard summary
-- ✅ Search by `Name`, `Host`, `Description`
-- ✅ Sort by allowed fields
-- ✅ Request DTO validation
-- ✅ Consistent `404` error format
-- ✅ Middleware for unexpected `500` errors
-- ✅ HTTP request logging with Serilog
-- ✅ Console and file logs
+- ✅ Search and sorting
+- ✅ DTO validation
+- ✅ Consistent error responses
+- ✅ Serilog logging
 - ✅ PostgreSQL via Docker Compose
 - ✅ Swagger / OpenAPI
+- ✅ Unit tests
 
 ## 🧱 Tech Stack
 
 - **.NET 10**
 - **ASP.NET Core Web API**
-- **Controllers**
 - **Entity Framework Core**
 - **Npgsql**
 - **PostgreSQL 16**
@@ -41,128 +36,47 @@ This is a pet project that follows a practical backend structure: server CRUD, h
 - **Serilog**
 - **xUnit**
 
-## 📂 Project Structure
+## ⚙️ Run
 
-```text
-PulsePanel
-├── src
-│   ├── PulsePanel.Api
-│   ├── PulsePanel.Core
-│   └── PulsePanel.Infrastructure
-│
-├── tests
-│   └── PulsePanel.Tests
-│
-├── deploy
-│   └── docker-compose.yml
-│
-├── docs
-│   └── readme
-│       ├── README.en.md
-│       └── README.ru.md
-│
-├── README.md
-└── PulsePanel.slnx
-```
-
-## ⚙️ Getting Started
-
-### 1. Requirements
-
-- .NET 10 SDK
-- Docker Desktop
-- EF Core CLI tool
-
-If `dotnet ef` is not installed:
-
-```bash
-dotnet tool install --global dotnet-ef
-```
-
-## 🐳 Run with Docker Compose
-
-Use this option when you want to start the full stack: API + PostgreSQL.
+### Docker Compose
 
 ```bash
 docker compose -f deploy/docker-compose.yml up -d --build
 ```
 
-Check running containers:
-
-```bash
-docker compose -f deploy/docker-compose.yml ps
-```
-
-Open Swagger:
+Swagger:
 
 ```text
 http://localhost:8080/swagger
 ```
 
-Useful Docker commands:
+### Local Run With Visual Studio / dotnet run
+
+Start PostgreSQL only:
 
 ```bash
-docker compose -f deploy/docker-compose.yml logs -f api
-docker compose -f deploy/docker-compose.yml down
+docker compose -f deploy/docker-compose.yml up -d postgres
 ```
 
-In Docker, the API connects to PostgreSQL through the internal service name:
-
-```text
-Host=postgres;Port=5432;Database=pulsepanel;Username=pulsepanel;Password=***
-```
-
-## 💻 Run Locally
-
-Use this option when you run the API from Visual Studio or `dotnet run`, while PostgreSQL runs in Docker.
-
-### 2. Start PostgreSQL only
-
-```bash
-docker compose -f deploy/docker-compose.yml up -d
-```
-
-Check that PostgreSQL is running:
-
-```bash
-docker compose -f deploy/docker-compose.yml ps
-```
-
-### 3. Create a migration when the database schema changes
-
-Create a new migration only if you changed an entity, `AppDbContext`, or EF Core configuration.
+Create a migration when the database schema changes:
 
 ```bash
 dotnet ef migrations add MigrationName --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
 ```
 
-Example:
-
-```bash
-dotnet ef migrations add InitialCreate --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
-```
-
-If you changed only controllers, services, request DTOs, logging, or README files, a new migration is not required.
-
-### 4. Apply migrations to the database
+Apply migrations:
 
 ```bash
 dotnet ef database update --project src/PulsePanel.Infrastructure --startup-project src/PulsePanel.Api
 ```
 
-### 5. Build the solution
-
-```bash
-dotnet build PulsePanel.slnx
-```
-
-### 6. Run the API
+Run the API:
 
 ```bash
 dotnet run --project src/PulsePanel.Api
 ```
 
-### 7. Open Swagger
+Swagger:
 
 ```text
 http://localhost:5264/swagger
@@ -178,76 +92,23 @@ http://localhost:5264/swagger
 | `PUT` | `/api/servers/{id}` | Update server |
 | `DELETE` | `/api/servers/{id}` | Delete server |
 | `POST` | `/api/servers/{id}/heartbeat` | Update heartbeat |
+| `POST` | `/api/servers/{id}/check` | Run TCP check |
 | `GET` | `/api/dashboard/summary` | Get dashboard summary |
 
-## 🔎 Search and Sorting
-
-`GET /api/servers` supports query parameters:
-
-| Parameter | Value |
-| --- | --- |
-| `search` | Search by `Name`, `Host`, `Description` |
-| `sortBy` | `name`, `host`, `createdAt`, `status`, `lastHeartbeatAt` |
-| `sortDirection` | `asc`, `desc` |
-
-Examples:
-
-```http
-GET /api/servers?search=prod
-GET /api/servers?sortBy=name&sortDirection=asc
-GET /api/servers?search=api&sortBy=createdAt&sortDirection=desc
-```
-
-When no query parameters are provided, the endpoint works with the default behavior and sorts by `createdAt desc`.
-
-## 🟢 Server Status
-
-Server status is calculated from `LastHeartbeatAt`:
-
-| Condition | Status |
-| --- | --- |
-| `LastHeartbeatAt == null` | `Unknown` |
-| heartbeat is recent | `Online` |
-| heartbeat is stale | `Offline` |
-
-## 📊 Dashboard Summary
-
-```http
-GET /api/dashboard/summary
-```
-
-Example response:
+## ⏱️ ServerChecks
 
 ```json
 {
-  "totalServers": 12,
-  "onlineServers": 2,
-  "offlineServers": 3,
-  "unknownServers": 7,
-  "lastHeartbeatAt": "2026-05-27T07:30:00Z"
+  "ServerChecks": {
+    "Enabled": true,
+    "IntervalSeconds": 60,
+    "TimeoutSeconds": 3
+  }
 }
 ```
 
-## 🧾 Error Responses
+## ✅ Tests
 
-`404` responses use a consistent format:
-
-```json
-{
-  "message": "Server not found",
-  "statusCode": 404,
-  "timeStamp": "2026-05-27T07:30:00Z",
-  "path": "/api/servers/{id}"
-}
+```bash
+dotnet test PulsePanel.slnx
 ```
-
-Unexpected errors are handled by `ExceptionHandlingMiddleware` and returned as `500` responses.
-
-## 📑 Logging
-
-Serilog writes logs to:
-
-- console
-- `logs/pulsepanel-YYYYMMDD.log`
-
-Log files are ignored by git.
