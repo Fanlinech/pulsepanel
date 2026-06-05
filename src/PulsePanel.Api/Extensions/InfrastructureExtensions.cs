@@ -3,13 +3,15 @@ using PulsePanel.Core.Interfaces;
 using PulsePanel.Infrastructure.Persistence;
 using PulsePanel.Infrastructure.Services;
 using PulsePanel.Core.Services;
+using PulsePanel.Core.Options;
 namespace PulsePanel.Api.Extensions;
 
 public static class InfrastructureExtensions
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration
+        )
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -17,6 +19,9 @@ public static class InfrastructureExtensions
         {
             options.UseNpgsql(connectionString);
         });
+
+        services.Configure<ServerCheckOptions>(
+            configuration.GetSection("ServerChecks"));
 
         services.AddScoped<IServerService, ServerService>();
         services.AddScoped<IDashboardService, DashboardService>();

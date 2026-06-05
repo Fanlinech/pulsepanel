@@ -1,6 +1,8 @@
-﻿using PulsePanel.Core;
+﻿using Microsoft.Extensions.Options;
+using PulsePanel.Core;
 using PulsePanel.Core.DTOs.Servers;
 using PulsePanel.Core.Interfaces;
+using PulsePanel.Core.Options;
 using PulsePanel.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
@@ -13,10 +15,12 @@ namespace PulsePanel.Infrastructure.Services
     public class ServerCheckService : IServerCheckService
     {
         private readonly AppDbContext _dbContext;
+        private readonly ServerCheckOptions _options;
 
-        public ServerCheckService(AppDbContext dbContext)
+        public ServerCheckService(AppDbContext dbContext, IOptions<ServerCheckOptions> options)
         {
             _dbContext = dbContext;
+            _options = options.Value;
         }
         
 
@@ -32,7 +36,7 @@ namespace PulsePanel.Infrastructure.Services
             try
             {
                 var connectTask = client.ConnectAsync(server.Host, server.CheckPort);
-                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(3));
+                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(_options.TimeoutSeconds));
                 var completedTask = await Task.WhenAny(connectTask, timeoutTask);
 
                 stopwatch.Stop();
